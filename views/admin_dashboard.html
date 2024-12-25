@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+  <title>Admin Dashboard</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+      text-align: center;
+    }
+
+    h2 {
+      margin-top: 20px;
+      font-weight: 600;
+    }
+
+    .menu-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin: 20px auto;
+      padding: 10px;
+      max-width: 400px;
+    }
+
+    .menu-card {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      padding: 20px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .menu-card a {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .menu-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .icon {
+      font-size: 40px;
+      width: 60px;
+      height: 60px;
+      line-height: 60px;
+      margin: 0 auto 10px;
+      border-radius: 50%;
+      color: #fff;
+    }
+
+    .green {
+      background-color: #28a745;
+    }
+
+    .red {
+      background-color: #dc3545;
+    }
+
+    .blue {
+      background-color: #007bff;
+    }
+
+    .orange {
+      background-color: #fd7e14;
+    }
+
+    h3 {
+      margin: 10px 0 5px;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    p {
+      font-size: 12px;
+      color: #777;
+      font-weight: 400;
+    }
+
+    
+  </style>
+</head>
+<body>
+  <h2>Admin Dashboard</h2>
+
+  <div class="menu-container">
+    <div class="menu-card">
+      <a href="/admin/schedules">
+        <div class="icon green">
+          📅
+        </div>
+        <h3>Tambah Jadwal Sampah</h3>
+        <p>Manage collection schedules</p>
+      </a>
+    </div>
+
+    <div class="menu-card">
+      <a href="/admin/manage-data">
+        <div class="icon red">
+          ⚙️
+        </div>
+        <h3>Atur & Hapus Data</h3>
+        <p>Manage and delete data</p>
+      </a>
+    </div>
+
+    <div class="menu-card">
+      <a href="/admin/add-data">
+        <div class="icon blue">
+          ➕
+        </div>
+        <h3>Tambah Data</h3>
+        <p>Add new data entries</p>
+      </a>
+    </div>
+
+    <div class="menu-card">
+      <a href="/admin/schedule-list">
+        <div class="icon orange">
+          🗓️
+        </div>
+        <h3>Schedule List</h3>
+        <p>View all schedules</p>
+      </a>
+    </div>
+  </div>
+
+</body>
+</html>

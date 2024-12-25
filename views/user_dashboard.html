@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Dashboard - Jenis Sampah</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* General Styles */
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+
+    h2 {
+      font-size: 32px;
+      font-weight: 600;
+      color: #333;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    /* Search Bar */
+    .search-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    .search-container input[type="text"] {
+      width: 70%;
+      max-width: 400px;
+      padding: 12px 15px;
+      font-size: 16px;
+      border: 2px solid #ccc;
+      border-radius: 5px 0 0 5px;
+      outline: none;
+    }
+
+    .search-container button {
+      padding: 12px 15px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 0 5px 5px 0;
+      cursor: pointer;
+    }
+
+    .search-container button:hover {
+      background-color: #0056b3;
+    }
+
+    /* Container for Cards */
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    /* Card Styles */
+    .card {
+      width: 90%;
+      max-width: 350px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: #fff;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .card .icon {
+      font-size: 50px;
+      flex-shrink: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f4f4f4;
+      border-radius: 10px;
+      width: 60px;
+      height: 60px;
+    }
+
+    .card .details h3 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .card .details p {
+      margin: 5px 0 0;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .organik {
+      background-color: #28a745;
+      color: #fff;
+    }
+
+    .anorganik {
+      background-color: #dc3545;
+      color: #fff;
+    }
+
+    /* Overlay Styles */
+    .overlay {
+      position: fixed;
+      bottom: -100%;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: 1000;
+      transition: bottom 0.4s ease;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    .overlay-content {
+      width: 90%;
+      max-width: 500px;
+      background-color: #fff;
+      color: #333;
+      padding: 30px;
+      border-radius: 20px 20px 0 0;
+      text-align: left;
+      box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
+      max-height: 80%;
+      overflow-y: auto;
+    }
+
+    .overlay-content h3 {
+      margin-top: 0;
+      font-size: 24px;
+      color: #28a745;
+    }
+
+    .overlay-content p {
+      font-size: 16px;
+      color: #555;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #333;
+    }
+
+    /* Container for Results */
+    #searchResults {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .result-card {
+      width: 90%;
+      max-width: 400px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      border-radius: 10px;
+      background-color: #fff;
+      color: #333;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .result-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .result-image {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+
+    .result-details {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .result-details h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .result-details p {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #555;
+    }
+
+    /* No Results Message */
+    .no-results {
+      text-align: center;
+      font-size: 16px;
+      color: #555;
+    }
+
+    .no-results button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 14px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .no-results button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h2>Jenis Sampah</h2>
+
+  <!-- Search Section -->
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search for trash..." />
+    <button onclick="searchTrash()">🔍</button>
+  </div>
+
+  <!-- Search Results -->
+  <div id="searchResults" class="container"></div>
+
+  <br>
+
+  <!-- Trash Categories -->
+  <div class="container">
+    <div class="card organik" onclick="showOverlay('organik')">
+      <div class="icon">🗑️</div>
+      <div class="details">
+        <h3>Sampah Organik</h3>
+        <p>Pengambilan: 2 Hari lagi</p>
+      </div>
+    </div>
+
+    <div class="card anorganik" onclick="showOverlay('anorganik')">
+      <div class="icon">🗑️</div>
+      <div class="details">
+        <h3>Sampah Anorganik</h3>
+        <p>Pengambilan: 2 Hari lagi</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay -->
+  <div class="overlay" id="overlay">
+    <div class="overlay-content" id="overlayContent">
+      <button class="close-btn" onclick="closeOverlay()">✖</button>
+      <div id="overlayDetails"></div>
+    </div>
+  </div>
+
+  <script>
+    function showOverlay(type) {
+      const overlay = document.getElementById('overlay');
+      const overlayDetails = document.getElementById('overlayDetails');
+
+      if (type === 'organik') {
+        overlayDetails.innerHTML = `
+          <h3>Sampah Organik</h3>
+          <p>Pengambilan: 2 Hari lagi</p>
+          <p>Sampah organik adalah sampah yang berasal dari bahan-bahan alami seperti sisa makanan, dedaunan, dan sebagainya.</p>
+        `;
+      } else if (type === 'anorganik') {
+        overlayDetails.innerHTML = `
+          <h3>Sampah Anorganik</h3>
+          <p>Pengambilan: 2 Hari lagi</p>
+          <p>Sampah anorganik adalah sampah yang tidak mudah terurai seperti plastik, kaca, dan logam.</p>
+        `;
+      }
+
+      overlay.style.bottom = '0';
+    }
+
+    function closeOverlay() {
+      const overlay = document.getElementById('overlay');
+      overlay.style.bottom = '-100%';
+    }
+
+    async function searchTrash() {
+      const query = document.getElementById('searchInput').value.trim();
+      const searchResults = document.getElementById('searchResults');
+      searchResults.innerHTML = ''; // Clear previous results
+
+      if (!query) {
+        searchResults.innerHTML = '<p class="no-results">Please enter a search term.</p>';
+        return;
+      }
+
+      try {
+        const response = await fetch(`/user/search?query=${encodeURIComponent(query)}`);
+        const data = await response.json();
+
+        if (data.length > 0) {
+          data.forEach(item => {
+            searchResults.innerHTML += `
+              <div class="result-card">
+                <img src="/${item.image || 'default.png'}" alt="${item.name}" class="result-image">
+                <div class="result-details">
+                  <h3>${item.name}</h3>
+                  <p><strong>Classification:</strong> ${item.classification_name || 'Unknown'}</p>
+                  <p><strong>Description:</strong> ${item.description || 'No description available'}</p>
+                </div>
+              </div>`;
+          });
+        } else {
+          searchResults.innerHTML = `
+            <div class="no-results">
+              <p>No results found. Would you like to use AI to classify the trash?</p>
+              <button onclick="classifyWithAI()">Use AI Classification</button>
+            </div>`;
+        }
+      } catch (error) {
+        searchResults.innerHTML = '<p class="no-results">An error occurred while searching.</p>';
+      }
+    }
+
+    async function classifyWithAI() {
+  const query = document.getElementById('searchInput').value.trim();
+  const searchResults = document.getElementById('searchResults');
+
+  try {
+    // Call the AI classification API
+    const response = await fetch('/user/classify-ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query })
+    });
+
+    const result = await response.json();
+
+    if (result.classification === 'Unknown') {
+      searchResults.innerHTML = `<p>The AI could not classify the item.</p>`;
+    } else {
+      // Automatically add the classified data to the database
+      const addResponse = await fetch('/user/add-classified', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: query,
+          classification_id: result.classification === 'Organik' ? 1 : 2,
+          description: `Automatically classified as ${result.classification} by AI.`,
+          image: 'uploads/default.png' // Use a default image for AI-classified items
+        })
+      });
+
+      const addResult = await addResponse.json();
+
+      if (addResponse.ok) {
+        searchResults.innerHTML = `
+          <div class="result-card">
+            <div class="result-details">
+              <h3>${query}</h3>
+              <p>The AI classified this as: <strong>${result.classification}</strong></p>
+              <p><strong>Added to Database:</strong> ${addResult.message}</p>
+            </div>
+          </div>`;
+      } else {
+        searchResults.innerHTML = `<p>Error adding classified data to the database: ${addResult.error}</p>`;
+      }
+    }
+  } catch (error) {
+    console.error('Error with AI classification:', error);
+    searchResults.innerHTML = '<p>An error occurred with AI classification.</p>';
+  }
+}
+
+  </script>
+  <script src="/public/js/user.js"></script>
+</body>
+</html>

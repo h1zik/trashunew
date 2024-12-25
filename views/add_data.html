@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>Tambah Data</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+
+    h2, h3 {
+      text-align: center;
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    input[type="text"],
+    textarea,
+    select,
+    button[type="submit"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-family: 'Poppins', sans-serif;
+      box-sizing: border-box;
+    }
+
+    select:focus,
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #007bff;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    button[type="submit"] {
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #218838;
+    }
+
+    /* Go Back Button */
+    .go-back {
+      background-color: #007bff;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      display: inline-block;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    .go-back:hover {
+      background-color: #0056b3;
+    }
+
+    /* Success Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      width: 80%;
+      max-width: 400px;
+    }
+
+    .modal-content button {
+      background-color: #007bff;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 15px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+
+      .container {
+        padding: 15px;
+      }
+
+      h2, h3 {
+        font-size: 22px;
+      }
+
+      button.go-back {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>Tambah Data</h2>
+
+  <!-- Go Back Button -->
+  <button class="go-back" onclick="goBack()">← Go Back to Dashboard</button>
+
+  <!-- Add Classification Section -->
+  <div class="container">
+    <h3>Add Classification</h3>
+    <form id="classificationForm">
+      <div class="form-group">
+        <input type="text" name="name" placeholder="Classification Name" required>
+      </div>
+      <button type="submit">Add Classification</button>
+    </form>
+  </div>
+
+  <!-- Add Trash Section -->
+  <div class="container">
+    <h3>Add Trash</h3>
+    <form id="trashForm" enctype="multipart/form-data">
+      <div class="form-group">
+        <input type="text" name="name" placeholder="Trash Name" required>
+      </div>
+      <div class="form-group">
+        <select name="classification_id" id="classificationDropdown" required>
+          <option value="" disabled selected>Select Classification</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <textarea name="description" placeholder="Trash Description" required></textarea>
+      </div>
+      <div class="form-group">
+        <input type="file" name="image" accept="image/*" required>
+      </div>
+      <button type="submit">Add Trash</button>
+    </form>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="modal">
+    <div class="modal-content">
+      <p id="successMessage">Data added successfully!</p>
+      <button onclick="closeModal()">OK</button>
+    </div>
+  </div>
+
+  <script>
+// Go Back Functionality
+function goBack() {
+  window.location.href = '/admin/dashboard';
+}
+
+// Fetch classifications for the dropdown
+async function fetchClassifications() {
+  try {
+    const response = await fetch('/admin/api/classifications');
+    const classifications = await response.json();
+
+    const dropdown = document.getElementById('classificationDropdown');
+    classifications.forEach(classification => {
+      const option = document.createElement('option');
+      option.value = classification.id;
+      option.textContent = classification.name;
+      dropdown.appendChild(option);
+    });
+  } catch (error) {
+    console.error('Error fetching classifications:', error);
+  }
+}
+
+// Handle form submission with fetch (for multipart/form-data)
+async function handleFormSubmission(formId, endpoint, successText) {
+  document.getElementById(formId).addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        body: formData // FormData handles multipart/form-data automatically
+      });
+
+      if (response.ok) {
+        document.getElementById('successMessage').textContent = successText;
+        document.getElementById('successModal').style.display = 'flex';
+        e.target.reset();
+      } else {
+        alert('Error adding data');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  });
+}
+
+
+// Close the success modal
+function closeModal() {
+  document.getElementById('successModal').style.display = 'none';
+}
+
+// Initialize the forms
+handleFormSubmission('classificationForm', '/admin/classifications', 'Classification added successfully!');
+handleFormSubmission('trashForm', '/admin/trash', 'Trash added successfully!');
+
+// Fetch classifications on page load
+fetchClassifications();
+  </script>
+</body>
+</html>
